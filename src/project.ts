@@ -55,9 +55,7 @@ const FALLBACK_EXCLUDES = [
   "**/*.min.cjs",
 ];
 
-const FALLBACK_GLOBS = [
-  "**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}",
-];
+const FALLBACK_GLOBS = ["**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}"];
 
 export type LoadProjectOptions = {
   cwd: string;
@@ -86,7 +84,10 @@ const gitListedFiles = (cwd: string): readonly string[] => {
     ["ls-files", "--cached", "--others", "--exclude-standard", "-z", "--", "."],
     { cwd, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 },
   );
-  return out.split("\0").filter(Boolean).map((rel) => resolve(cwd, rel));
+  return out
+    .split("\0")
+    .filter(Boolean)
+    .map((rel) => resolve(cwd, rel));
 };
 
 const isScannable = (file: string): boolean => SCANNABLE_EXT.has(extname(file));
@@ -105,7 +106,9 @@ const isGenerated = (file: string): boolean => {
 
 const discoverFiles = (cwd: string): readonly string[] => {
   if (isGitRepo(cwd)) {
-    return gitListedFiles(cwd).filter(isScannable).filter((f) => !isGenerated(f));
+    return gitListedFiles(cwd)
+      .filter(isScannable)
+      .filter((f) => !isGenerated(f));
   }
   return [];
 };
@@ -116,9 +119,7 @@ const discoverFiles = (cwd: string): readonly string[] => {
 // so symbol resolution through the TS type checker works correctly.
 export const loadProject = (opts: LoadProjectOptions): Project => {
   const cwd = resolve(opts.cwd);
-  const tsConfigFilePath = opts.tsConfigPath
-    ? resolve(cwd, opts.tsConfigPath)
-    : findTsConfig(cwd);
+  const tsConfigFilePath = opts.tsConfigPath ? resolve(cwd, opts.tsConfigPath) : findTsConfig(cwd);
 
   const project = tsConfigFilePath
     ? new Project({ tsConfigFilePath, skipAddingFilesFromTsConfig: true })
@@ -137,7 +138,9 @@ export const loadProject = (opts: LoadProjectOptions): Project => {
     const userExcludeMatches = (opts.exclude ?? []).map((g) => join(cwd, g));
     const filtered =
       userExcludeMatches.length > 0
-        ? discovered.filter((f) => !userExcludeMatches.some((pat) => f.includes(pat.replace(/\*/g, ""))))
+        ? discovered.filter(
+            (f) => !userExcludeMatches.some((pat) => f.includes(pat.replace(/\*/g, ""))),
+          )
         : discovered;
     for (const file of filtered) project.addSourceFileAtPathIfExists(file);
     return project;
