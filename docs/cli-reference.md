@@ -3,7 +3,7 @@
 ## Usage
 
 ```sh
-depdet [paths...] [options]
+depretec [paths...] [options]
 ```
 
 The first positional `path` sets the project root. Defaults to the current working directory.

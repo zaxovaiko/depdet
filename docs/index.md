@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: depdet
+  name: depretec
   text: Hunt down deprecated API usages
   tagline: Scans your JS/TS project for @deprecated JSDoc symbols and maps each one to its replacement. Zero config, CI-ready.
   actions:
@@ -14,7 +14,7 @@ hero:
       link: /cli-reference
     - theme: alt
       text: View on GitHub
-      link: https://github.com/zaxovaiko/depdet
+      link: https://github.com/zaxovaiko/depretec
 
 features:
   - title: Zero config

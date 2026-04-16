@@ -1,4 +1,4 @@
-# depdet
+# depretec
 
 Find `@deprecated` JSDoc usages in your JS/TS project and map them to their replacements.
 

@@ -3,8 +3,8 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'depretec',
   description: 'Find @deprecated JSDoc usages in your JS/TS project and map them to their replacements.',
-  base: '/depdet/',
-  head: [['link', { rel: 'icon', href: '/depdet/favicon.ico' }]],
+  base: '/depretec/',
+  head: [['link', { rel: 'icon', href: '/depretec/favicon.ico' }]],
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/getting-started' },
@@ -29,7 +29,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/zaxovaiko/depdet' },
+      { icon: 'github', link: 'https://github.com/zaxovaiko/depretec' },
     ],
     footer: {
       message: 'Released under the MIT License.',

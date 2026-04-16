@@ -1,6 +1,6 @@
 # Programmatic API
 
-depdet exposes a `scan()` function for use in scripts, custom tooling, or editor integrations.
+depretec exposes a `scan()` function for use in scripts, custom tooling, or editor integrations.
 
 ## Installation
 
