@@ -29,7 +29,11 @@
     "dev": "bun build src/cli.ts --outdir dist --target=node --format=esm --watch --external ts-morph --external cac --external cli-table3 --external picocolors",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run build && bun test"
+    "prepublishOnly": "bun run build && bun test",
+    "lint": "oxlint src/",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "cac": "7.0.0",
@@ -40,7 +44,9 @@
   "devDependencies": {
     "@types/bun": "1.3.12",
     "@types/node": "25.6.0",
+    "oxlint": "1.60.0",
     "typescript": "6.0.2",
+    "vitepress": "^1.6.3",
     "zod": "4.3.6"
   },
   "keywords": [

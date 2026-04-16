@@ -1,4 +1,4 @@
-import type { Report } from '../types.ts'
+import type { Report } from "../types.ts";
 
 export const renderJson = (report: Report): string =>
-  JSON.stringify(report, null, 2)
+	JSON.stringify(report, null, 2);
