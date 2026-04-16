@@ -1,10 +1,10 @@
 {
-  "name": "dedec",
+  "name": "depdet",
   "version": "0.1.0",
   "description": "Find @deprecated JSDoc usages in your JS/TS project and map them to their replacements.",
   "type": "module",
   "bin": {
-    "dedec": "./bin/dedec.js"
+    "depdet": "./bin/depdet.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

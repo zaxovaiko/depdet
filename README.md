@@ -1,4 +1,4 @@
-# dedec
+# depdet
 
 Find `@deprecated` JSDoc usages in your JS/TS project and map them to their replacements.
 
@@ -11,11 +11,11 @@ Find `@deprecated` JSDoc usages in your JS/TS project and map them to their repl
 
 ```sh
 # no install
-npx dedec
-bunx dedec
+npx depdet
+bunx depdet
 
 # or pin it
-bun add -D dedec
+bun add -D depdet
 ```
 
 ## Example: zod v4
@@ -31,7 +31,7 @@ export const Schema = z.object({
 ```
 
 ```sh
-$ npx dedec
+$ npx depdet
 ┌───────────────────┬─────────────────┬───┬─────────────┐
 │ Location          │ Deprecated      │ → │ Replacement │
 ├───────────────────┼─────────────────┼───┼─────────────┤
@@ -44,13 +44,13 @@ $ npx dedec
 ## Feed it to an LLM
 
 ```sh
-npx dedec --format json | llm -s "Apply these replacements to the files."
+npx depdet --format json | llm -s "Apply these replacements to the files."
 ```
 
 ## Options
 
 ```
-Usage: dedec [paths...] [options]
+Usage: depdet [paths...] [options]
 
 Options:
   -f, --format <fmt>   pretty | json | md            (default: pretty)
@@ -68,7 +68,7 @@ Positional `paths` pick the project root (first path wins). Defaults to `cwd`.
 ## Programmatic API
 
 ```ts
-import { scan } from 'dedec'
+import { scan } from 'depdet'
 
 const report = await scan({ cwd: './my-project' })
 for (const o of report.occurrences) {

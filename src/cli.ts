@@ -23,7 +23,7 @@ type CliFlags = {
   failOnFound?: boolean
 }
 
-const cli = cac('dedec')
+const cli = cac('depdet')
 
 cli
   .command('[...paths]', 'Scan for @deprecated JSDoc usages')
