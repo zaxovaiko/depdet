@@ -30,7 +30,9 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "bun run build && bun test",
-    "lint": "oxlint src/",
+    "fmt": "oxfmt src/",
+    "fmt:check": "oxfmt --check src/",
+    "lint": "oxlint src/ && oxfmt --check src/",
     "release": "release-it",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
@@ -43,13 +45,14 @@
     "ts-morph": "28.0.0"
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "^10.0.6",
+    "@release-it/conventional-changelog": "10.0.6",
     "@types/bun": "1.3.12",
     "@types/node": "25.6.0",
+    "oxfmt": "0.45.0",
     "oxlint": "1.60.0",
-    "release-it": "^20.0.0",
+    "release-it": "20.0.0",
     "typescript": "6.0.2",
-    "vitepress": "^1.6.3",
+    "vitepress": "1.6.4",
     "zod": "4.3.6"
   },
   "keywords": [
