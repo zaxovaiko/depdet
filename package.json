@@ -65,6 +65,14 @@
     "cli"
   ],
   "license": "MIT",
+  "homepage": "https://zaxovaiko.github.io/depretec/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaxovaiko/depretec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zaxovaiko/depretec/issues"
+  },
   "publishConfig": {
     "access": "public"
   }
