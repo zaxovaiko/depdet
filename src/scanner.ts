@@ -86,7 +86,7 @@ export const symbolIdOf = (decl: Node): string => {
 	return makeSymbolId(decl, qualifiedName);
 };
 
-const toDeprecation = (decl: Node): Deprecation | null => {
+export const toDeprecation = (decl: Node): Deprecation | null => {
 	const tag = firstDeprecatedTag(decl);
 	if (!tag) return null;
 

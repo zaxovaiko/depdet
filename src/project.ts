@@ -69,19 +69,17 @@ export const loadProject = (opts: LoadProjectOptions): Project => {
 		project.addSourceFilesAtPaths([...patterns, ...excludes]);
 	}
 
-	// Access the TS Program so all dep .d.ts files (node_modules/**/*.d.ts)
-	// reachable via imports are loaded by the TypeScript language service.
-	// Then mirror them into the ts-morph Project so scanners can walk them.
-	// Force TS Program creation so all dep files (node_modules/**/*.d.ts) are
-	// resolved and available via the type checker.
-	project.getProgram().compilerObject.getSourceFiles();
 	return project;
 };
 
-export const allSourceFiles = (project: Project): readonly SourceFile[] => {
-	const program = project.getProgram().compilerObject;
-	return program
-		.getSourceFiles()
-		.map((sf) => project.getSourceFile(sf.fileName))
-		.filter((sf): sf is SourceFile => sf !== undefined);
-};
+// Returns only explicitly added source files (user source). Dep .d.ts files are
+// resolved lazily by the TypeScript type checker on demand — never loaded in bulk.
+export const allSourceFiles = (project: Project): readonly SourceFile[] =>
+	project.getSourceFiles();
+
+// Count dep files from the TS program without loading them into ts-morph's cache.
+export const countDepFiles = (project: Project): number =>
+	project
+		.getProgram()
+		.compilerObject.getSourceFiles()
+		.filter((sf) => sf.fileName.includes("/node_modules/")).length;

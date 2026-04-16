@@ -7,7 +7,7 @@ import {
 	SyntaxKind,
 } from "ts-morph";
 import { allSourceFiles } from "./project.ts";
-import { symbolIdOf, uniqueBy } from "./scanner.ts";
+import { toDeprecation, uniqueBy } from "./scanner.ts";
 import type { Deprecation, Occurrence } from "./types.ts";
 
 const isUserSource = (sf: SourceFile): boolean =>
@@ -17,7 +17,6 @@ const isDeclarationName = (id: Identifier): boolean => {
 	const parent = id.getParent();
 	if (!parent) return false;
 	const kind = parent.getKind();
-	// Name slot of a declaration
 	switch (kind) {
 		case SyntaxKind.FunctionDeclaration:
 		case SyntaxKind.MethodDeclaration:
@@ -52,7 +51,7 @@ const trimSnippet = (text: string, max = 120): string => {
 	return trimmed.length > max ? `${trimmed.slice(0, max - 1)}…` : trimmed;
 };
 
-const toOccurrence = (id: Identifier, deprecation: Deprecation): Occurrence => {
+const makeOccurrence = (id: Identifier, deprecation: Deprecation): Occurrence => {
 	const sf = id.getSourceFile();
 	const start = id.getStart();
 	const { line, column } = sf.getLineAndColumnAtPos(start);
@@ -66,43 +65,33 @@ const toOccurrence = (id: Identifier, deprecation: Deprecation): Occurrence => {
 	};
 };
 
-const matchDeprecation = (
-	id: Identifier,
-	byId: ReadonlyMap<string, Deprecation>,
-): Deprecation | undefined => {
-	const sym = resolveSymbol(id);
-	if (!sym) return undefined;
-	const decls = sym.getDeclarations();
-	for (const decl of decls) {
-		const dep = byId.get(symbolIdOf(decl));
-		if (dep) return dep;
-	}
-	return undefined;
-};
-
-const occurrencesInFile = (
-	sf: SourceFile,
-	byId: ReadonlyMap<string, Deprecation>,
-): readonly Occurrence[] =>
-	sf
-		.getDescendantsOfKind(SyntaxKind.Identifier)
-		.filter((id) => !isDeclarationName(id))
-		.flatMap((id) => {
-			const dep = matchDeprecation(id, byId);
-			return dep ? [toOccurrence(id, dep)] : [];
-		});
-
+// Resolves each identifier's declaration lazily via the TypeScript type checker.
+// Dep .d.ts files are never loaded in bulk — only declarations actually referenced
+// in user source are checked, keeping memory proportional to imports, not dep count.
 export const findOccurrences = (
 	project: Project,
-	deprecations: readonly Deprecation[],
-): readonly Occurrence[] => {
-	const byId = new Map(deprecations.map((d) => [d.symbolId, d]));
-	return allSourceFiles(project)
+	noDeps = false,
+): readonly Occurrence[] =>
+	allSourceFiles(project)
 		.filter(isUserSource)
-		.flatMap((sf) => occurrencesInFile(sf, byId))
+		.flatMap((sf) => sf.getDescendantsOfKind(SyntaxKind.Identifier))
+		.filter((id) => !isDeclarationName(id))
+		.flatMap((id) => {
+			const sym = resolveSymbol(id);
+			if (!sym) return [];
+			for (const decl of sym.getDeclarations()) {
+				if (
+					noDeps &&
+					decl.getSourceFile().getFilePath().includes("/node_modules/")
+				)
+					continue;
+				const dep = toDeprecation(decl);
+				if (dep) return [makeOccurrence(id, dep)];
+			}
+			return [];
+		})
 		.filter(
 			uniqueBy(
 				(o) => `${o.file}:${o.line}:${o.column}:${o.deprecation.symbolId}`,
 			),
 		);
-};

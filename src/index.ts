@@ -1,18 +1,11 @@
-import type { SourceFile } from "ts-morph";
 import { findOccurrences } from "./analyzer.ts";
-import { allSourceFiles, loadProject } from "./project.ts";
+import { allSourceFiles, countDepFiles, loadProject } from "./project.ts";
 import { collectDeprecations } from "./scanner.ts";
 import type { Report, ScanOptions } from "./types.ts";
 
-const countFiles = (files: readonly SourceFile[]) => {
-	const source = files.filter(
-		(sf) => !sf.getFilePath().includes("/node_modules/"),
-	).length;
-	return { source, deps: files.length - source };
-};
-
 export const scan = async (opts: ScanOptions = {}): Promise<Report> => {
 	const cwd = opts.cwd ?? process.cwd();
+	const noDeps = opts.noDeps ?? false;
 	const started = Date.now();
 
 	const project = loadProject({
@@ -22,16 +15,19 @@ export const scan = async (opts: ScanOptions = {}): Promise<Report> => {
 		exclude: opts.exclude,
 	});
 
-	const deprecations = collectDeprecations(project, opts.noDeps ?? false);
-	const occurrences = findOccurrences(project, deprecations);
-	const { source, deps } = countFiles(allSourceFiles(project));
+	const occurrences = findOccurrences(project, noDeps);
+	const sourceFiles = allSourceFiles(project).length;
+	const depFiles = noDeps ? 0 : countDepFiles(project);
+
+	// Collect user-source deprecated declarations for the report catalogue.
+	const deprecations = collectDeprecations(project, true);
 
 	return {
 		deprecations,
 		occurrences,
 		scanned: {
-			sourceFiles: source,
-			depFiles: deps,
+			sourceFiles,
+			depFiles,
 			durationMs: Date.now() - started,
 		},
 	};
