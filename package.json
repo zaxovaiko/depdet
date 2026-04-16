@@ -1,0 +1,56 @@
+{
+  "name": "dedec",
+  "version": "0.1.0",
+  "description": "Find @deprecated JSDoc usages in your JS/TS project and map them to their replacements.",
+  "type": "module",
+  "bin": {
+    "dedec": "./bin/dedec.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18",
+    "bun": ">=1.1"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts src/index.ts --outdir dist --target=node --format=esm --external ts-morph --external cac --external cli-table3 --external picocolors && tsc --emitDeclarationOnly --outDir dist",
+    "dev": "bun build src/cli.ts --outdir dist --target=node --format=esm --watch --external ts-morph --external cac --external cli-table3 --external picocolors",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build && bun test"
+  },
+  "dependencies": {
+    "cac": "7.0.0",
+    "cli-table3": "0.6.5",
+    "picocolors": "1.1.1",
+    "ts-morph": "28.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.12",
+    "@types/node": "25.6.0",
+    "typescript": "6.0.2",
+    "zod": "4.3.6"
+  },
+  "keywords": [
+    "deprecated",
+    "jsdoc",
+    "codemod",
+    "typescript",
+    "migration",
+    "lint",
+    "cli"
+  ],
+  "license": "MIT"
+}
